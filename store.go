@@ -115,7 +115,7 @@ func (sm *shardedMap[V]) Clear(onEvict func(item *Item[V])) {
 }
 
 func (sm *shardedMap[V]) GetAll() []V {
-	var values []V
+	values := []V{}
 	now := time.Now()
 
 	for _, shard := range sm.shards {
