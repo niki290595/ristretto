@@ -116,13 +116,10 @@ func (sm *shardedMap[V]) Clear(onEvict func(item *Item[V])) {
 
 func (sm *shardedMap[V]) GetAll() []V {
 	values := []V{}
-	now := time.Now()
 
 	for _, shard := range sm.shards {
 		for _, item := range shard.data {
-			if item.expiration.After(now) {
-				values = append(values, item.value)
-			}
+			values = append(values, item.value)
 		}
 	}
 
