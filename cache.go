@@ -431,6 +431,10 @@ func (c *Cache[K, V]) UpdateMaxCost(maxCost int64) {
 	c.cachePolicy.UpdateMaxCost(maxCost)
 }
 
+func (c *Cache[K, V]) GetAll() []V {
+	return c.storedItems.GetAll()
+}
+
 // processItems is ran by goroutines processing the Set buffer.
 func (c *Cache[K, V]) processItems() {
 	startTs := make(map[uint64]time.Time)

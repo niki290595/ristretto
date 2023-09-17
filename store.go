@@ -53,6 +53,7 @@ type store[V any] interface {
 	Cleanup(policy policy[V], onEvict func(item *Item[V]))
 	// Clear clears all contents of the store.
 	Clear(onEvict func(item *Item[V]))
+	GetAll() []V
 }
 
 // newStore returns the default store implementation.
@@ -111,6 +112,21 @@ func (sm *shardedMap[V]) Clear(onEvict func(item *Item[V])) {
 	for i := uint64(0); i < numShards; i++ {
 		sm.shards[i].Clear(onEvict)
 	}
+}
+
+func (sm *shardedMap[V]) GetAll() []V {
+	var values []V
+	now := time.Now()
+
+	for _, shard := range sm.shards {
+		for _, item := range shard.data {
+			if item.expiration.After(now) {
+				values = append(values, item.value)
+			}
+		}
+	}
+
+	return values
 }
 
 type lockedMap[V any] struct {
